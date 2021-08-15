@@ -17,6 +17,7 @@ import (
 	"github.com/spf13/cobra"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // srvCmd is the serve sub command to start the api server
@@ -88,7 +89,7 @@ func connectDatabase() (*gorm.DB, error) {
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		Conn: sqlDB,
-	}), &gorm.Config{})
+	}), &gorm.Config{Logger: logger.Default.LogMode(logger.Warn)})
 	if err != nil {
 		return nil, err
 	}

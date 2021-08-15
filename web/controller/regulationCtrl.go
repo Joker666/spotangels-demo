@@ -21,6 +21,8 @@ func NewRegulationController(regulationService *service.RegulationService) *Regu
 
 // GetActiveRegulation returns active regulation for a time and spot
 func (rc *RegulationController) GetActiveRegulation(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	rc.s.GetRegulatedSlotsForATime(ctx, 4)
 	resp.ServeData(w, r, http.StatusOK, nil)
 	return
 }

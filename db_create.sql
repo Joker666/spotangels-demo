@@ -33,19 +33,16 @@ CREATE TABLE segments (
 
 -- foreign keys
 -- Reference: regulated_slot_regulation (table: regulated_slots)
-ALTER TABLE regulated_slots ADD CONSTRAINT regulated_slot_regulation
-    FOREIGN KEY (regulation_id)
-    REFERENCES regulations (id)  
-    NOT DEFERRABLE 
-    INITIALLY IMMEDIATE
-;
+ALTER TABLE "regulated_slots" 
+    ADD CONSTRAINT "fk_regulations_regulated_slots"
+    FOREIGN KEY ("regulation_id")
+    REFERENCES "regulations"("id"
+);
 
 -- Reference: regulation_segment (table: regulations)
-ALTER TABLE regulations ADD CONSTRAINT regulation_segment
-    FOREIGN KEY (segment_id)
-    REFERENCES segments (id)  
-    NOT DEFERRABLE 
-    INITIALLY IMMEDIATE
-;
-
+ALTER TABLE "regulations" 
+    ADD CONSTRAINT "fk_segments_regulations" 
+    FOREIGN KEY ("segment_id") 
+    REFERENCES "segments"("id"
+);
 -- End of file.

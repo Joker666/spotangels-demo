@@ -9,7 +9,7 @@ import (
 
 // RegulationRepository interface represents the regulation repository
 type RegulationRepository interface {
-	GetBySegment(ctx context.Context, segmentID int) (*model.RegulationInfo, error)
+	GetBySegment(ctx context.Context, segmentID int) (*model.Segment, error)
 }
 
 // Regulation holds the necessary fields for RegulationRepository
@@ -25,6 +25,10 @@ func NewRegulation(db *gorm.DB) *Regulation {
 }
 
 // GetBySegment gets regulationInfo by segmentID
-func (u *Regulation) GetBySegment(ctx context.Context, segmentID int) (*model.RegulationInfo, error) {
-	return nil, nil
+func (u *Regulation) GetBySegment(ctx context.Context, segmentID int) (*model.Segment, error) {
+	tx := u.db.WithContext(ctx)
+
+	var segment model.Segment
+	err := tx.Preload("Regulations").Preload("Regulations.RegulatedSlots").First(&segment, segmentID).Error
+	return &segment, err
 }
