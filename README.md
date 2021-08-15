@@ -13,7 +13,13 @@ This DB Model Architecture will allow us to map the issues at task to the databa
     segment = (id=1, name="Castro St")
     regulation = (id=1, segment_id=1, name="Streat Cleaning")
     regulated_slot = (id=1, regulation_id=1, day_of_week=5, week_of_month=2, start_time="9:00", end_time="11:00")
-    regulated_slot = (id=1, regulation_id=1, day_of_week=5, week_of_month=4, start_time="9:00", end_time="11:00")
+    regulated_slot = (id=2, regulation_id=1, day_of_week=5, week_of_month=4, start_time="9:00", end_time="11:00")
+
+Another example of "Meter" regulation where someone can park for a price of 5$/hour from 8 AM to 6 PM daily, and has the time limitation of 2 hours at max can be mapped like this
+
+    segment = (id=2, name="Market St")
+    regulation = (id=2, segment_id=2, name="Meter")
+    regulated_slot = (id=3, regulation_id=2, is_daily=true, start_time="8:00", end_time="18:00", allowed_threshold=2, cost=5)
 
 ## Improvements
 
