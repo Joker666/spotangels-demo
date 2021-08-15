@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/Joker666/spotangels-demo/repo"
+	"github.com/Joker666/spotangels-demo/service"
 	"github.com/Joker666/spotangels-demo/web"
 	"github.com/Joker666/spotangels-demo/web/controller"
 	"github.com/gorilla/mux"
@@ -38,9 +40,10 @@ func serve(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	log.Println(db.Name())
 
-	regulationController := controller.NewRegulationController()
+	regulationRepo := repo.NewRegulation(db)
+	regulationService := service.NewRegulationService(regulationRepo)
+	regulationController := controller.NewRegulationController(regulationService)
 
 	port := ":" + os.Getenv("PORT")
 	r := mux.NewRouter()
