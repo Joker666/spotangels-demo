@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/Joker666/spotangels-demo/model"
@@ -30,17 +29,15 @@ func (r *RegulationService) GetRegulatedSlotsForATime(ctx context.Context, segme
 		return highPriorityActiveRegulation, activeRegulations, err
 	}
 
-	now := time.Now()
 	requestedDateDayOfWeek := r.processDayOfWeek(requestedDate)
-	log.Println(requestedDateDayOfWeek)
 
 	for _, regulation := range segment.Regulations {
 		for _, slot := range regulation.RegulatedSlots {
 			startHour, startMinute, _ := slot.StartTime.Clock()
-			startTime := time.Date(now.Year(), now.Month(), now.Day(), startHour, startMinute, 0, 0, now.Location())
+			startTime := time.Date(requestedDate.Year(), requestedDate.Month(), requestedDate.Day(), startHour, startMinute, 0, 0, requestedDate.Location())
 
 			endHour, endMinute, _ := slot.EndTime.Clock()
-			endTime := time.Date(now.Year(), now.Month(), now.Day(), endHour, endMinute, 0, 0, now.Location())
+			endTime := time.Date(requestedDate.Year(), requestedDate.Month(), requestedDate.Day(), endHour, endMinute, 0, 0, requestedDate.Location())
 
 			if requestedDate.After(startTime) && requestedDate.Before(endTime) {
 				ar := model.ActiveRegulation{
@@ -54,7 +51,13 @@ func (r *RegulationService) GetRegulatedSlotsForATime(ctx context.Context, segme
 				if slot.IsDaily {
 					activeRegulations = append(activeRegulations, ar)
 				} else if slot.DayOfWeek != nil && *slot.DayOfWeek == requestedDateDayOfWeek {
-					activeRegulations = append(activeRegulations, ar)
+					if slot.WeekOfMonth != nil {
+						if *slot.WeekOfMonth == r.processWeekOfMonth(requestedDate) {
+							activeRegulations = append(activeRegulations, ar)
+						}
+					} else {
+						activeRegulations = append(activeRegulations, ar)
+					}
 				}
 			}
 		}
@@ -78,8 +81,8 @@ func (r *RegulationService) processDayOfWeek(current time.Time) int {
 }
 
 func (r *RegulationService) processWeekOfMonth(current time.Time) int {
-	if current.Weekday() == time.Sunday {
-		return 7
-	}
-	return int(current.Weekday())
+	beginningOfTheMonth := time.Date(current.Year(), current.Month(), 1, 0, 0, 0, 0, current.Location())
+	_, thisWeek := current.ISOWeek()
+	_, beginningWeek := beginningOfTheMonth.ISOWeek()
+	return 1 + thisWeek - beginningWeek
 }
