@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/Joker666/spotangels-demo/service"
 	"github.com/Joker666/spotangels-demo/web/resp"
@@ -22,7 +25,29 @@ func NewRegulationController(regulationService *service.RegulationService) *Regu
 // GetActiveRegulation returns active regulation for a time and spot
 func (rc *RegulationController) GetActiveRegulation(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	rc.s.GetRegulatedSlotsForATime(ctx, 4)
-	resp.ServeData(w, r, http.StatusOK, nil)
-	return
+	segmentID, err := strconv.Atoi(r.URL.Query().Get("segment_id"))
+
+	dtl := map[string]interface{}{}
+	if err != nil || segmentID < 1 {
+		dtl["segment_id"] = "is invalid"
+		resp.ServeUnprocessableEntity(w, r, ErrInvalidData, dtl)
+		return
+	}
+
+	timestamp, err := strconv.Atoi(r.URL.Query().Get("timestamp"))
+	if err != nil || timestamp < 1 {
+		dtl["timestamp"] = "is invalid"
+		resp.ServeUnprocessableEntity(w, r, ErrInvalidData, dtl)
+		return
+	}
+
+	requestedDate := time.Unix(int64(timestamp), 0)
+	log.Println("Requested Date: ", requestedDate)
+
+	activeRegulations, err := rc.s.GetRegulatedSlotsForATime(ctx, segmentID, requestedDate)
+	if err != nil {
+		resp.ServeInternalServerError(w, r, ErrProcessFailure)
+		return
+	}
+	resp.ServeData(w, r, http.StatusOK, activeRegulations)
 }
