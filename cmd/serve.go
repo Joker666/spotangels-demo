@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/Joker666/spotangels-demo/web"
+	"github.com/Joker666/spotangels-demo/web/controller"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -38,8 +40,13 @@ func serve(cmd *cobra.Command, args []string) error {
 	}
 	log.Println(db.Name())
 
+	regulationController := controller.NewRegulationController()
+
 	port := ":" + os.Getenv("PORT")
 	r := mux.NewRouter()
+	s := r.PathPrefix("/api").Subrouter()
+
+	web.NewServer(s, regulationController)
 
 	log.Println("Starting server on", port)
 	srv := &http.Server{

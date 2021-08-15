@@ -1,11 +1,11 @@
-insert into public.segment (id, name)
+insert into public.segments (id, name)
 values  (1, 'Valencia St'),
         (2, 'Castro St'),
         (3, 'Montgomery St'),
         (4, 'Market St');
 
 
-insert into public.regulation (id, name, segment_id)
+insert into public.regulations (id, name, segment_id)
 values  (1, 'Street Cleaning', 1),
         (2, 'Tow Away', 1),
         (3, 'Time Limit', 1),
@@ -18,7 +18,7 @@ values  (1, 'Street Cleaning', 1),
         (10, 'Time Limit', 4);
 
 
-insert into public.regulated_slot (id, day_of_week, week_of_month, day_of_month, start_time, end_time, allowed_threshold, cost, is_daily, regulation_id)
+insert into public.regulated_slots (id, day_of_week, week_of_month, day_of_month, start_time, end_time, allowed_threshold, cost, is_daily, regulation_id)
 values  (3, null, null, null, '10:00:00', '14:00:00', null, 0, true, 2),
         (6, 3, null, null, '09:00:00', '18:00:00', 2, 0, false, 3),
         (2, 5, 4, null, '09:00:00', '11:00:00', null, 0, false, 1),
