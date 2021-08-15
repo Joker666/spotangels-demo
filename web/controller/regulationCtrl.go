@@ -44,10 +44,12 @@ func (rc *RegulationController) GetActiveRegulation(w http.ResponseWriter, r *ht
 	requestedDate := time.Unix(int64(timestamp), 0)
 	log.Println("Requested Date: ", requestedDate)
 
-	activeRegulations, err := rc.s.GetRegulatedSlotsForATime(ctx, segmentID, requestedDate)
+	highPriorityActiveRegulation, activeRegulations, err := rc.s.GetRegulatedSlotsForATime(ctx, segmentID, requestedDate)
 	if err != nil {
 		resp.ServeInternalServerError(w, r, ErrProcessFailure)
 		return
 	}
-	resp.ServeData(w, r, http.StatusOK, activeRegulations)
+
+	data := resp.ActiveRegulations{HighPriority: highPriorityActiveRegulation, All: activeRegulations}
+	resp.ServeData(w, r, http.StatusOK, data)
 }
