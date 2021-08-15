@@ -30,6 +30,7 @@ func (r *RegulationService) GetRegulatedSlotsForATime(ctx context.Context, segme
 	}
 
 	requestedDateDayOfWeek := r.processDayOfWeek(requestedDate)
+	requestedDateWeekOfMonth := r.processWeekOfMonth(requestedDate)
 
 	for _, regulation := range segment.Regulations {
 		for _, slot := range regulation.RegulatedSlots {
@@ -39,7 +40,7 @@ func (r *RegulationService) GetRegulatedSlotsForATime(ctx context.Context, segme
 			endHour, endMinute, _ := slot.EndTime.Clock()
 			endTime := time.Date(requestedDate.Year(), requestedDate.Month(), requestedDate.Day(), endHour, endMinute, 0, 0, requestedDate.Location())
 
-			if requestedDate.After(startTime) && requestedDate.Before(endTime) {
+			if requestedDate.After(startTime) && requestedDate.Before(endTime) { // If the requested time is inside a slot
 				ar := model.ActiveRegulation{
 					ID:               regulation.ID,
 					Name:             regulation.Name,
@@ -48,11 +49,11 @@ func (r *RegulationService) GetRegulatedSlotsForATime(ctx context.Context, segme
 					AllowedThreshold: slot.AllowedThreshold,
 					Cost:             slot.Cost,
 				}
-				if slot.IsDaily {
+				if slot.IsDaily { // If daily
 					activeRegulations = append(activeRegulations, ar)
-				} else if slot.DayOfWeek != nil && *slot.DayOfWeek == requestedDateDayOfWeek {
-					if slot.WeekOfMonth != nil {
-						if *slot.WeekOfMonth == r.processWeekOfMonth(requestedDate) {
+				} else if slot.DayOfWeek != nil && *slot.DayOfWeek == requestedDateDayOfWeek { // If it has a day of week
+					if slot.WeekOfMonth != nil { // If it has a week of month
+						if *slot.WeekOfMonth == requestedDateWeekOfMonth {
 							activeRegulations = append(activeRegulations, ar)
 						}
 					} else {
