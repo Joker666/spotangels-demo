@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    image: spotangels/demo
+    restart: "no"
+    environment:
+      DB_URI: "host=postgresql user=postgres password=password dbname=spotangels-demo port=5432 sslmode=disable"
+    ports:
+      - 8080:8080
+    command: serve
+    depends_on:
+      - postgresql
+
+  postgresql:
+    image: postgres
+    restart: "no"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: spotangels-demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgresdb:/var/lib/postgresql/data/
+
+volumes:
+  postgresdb:
