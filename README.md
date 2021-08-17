@@ -24,3 +24,14 @@ Another example of "Meter" regulation where someone can park for a price of 5$/h
 ## Improvements
 
 While this solution works for the problem at hand, we could improve upon this solution further to impose certain constraints on the data. We could use different tables for different kinds of regulations and enforce constraints that are much better suited for that particular regulation. For example, the `Meter` regulation will always have a price, so we can enforce that in the `Meter`'s `regulated_slot` table.
+
+# How to Run
+I have included a `db_create.sql` script for database creation and `demo_data.sql` for demo data to test the API. Also included `Dockerfile` and `docker-compose.yml` to run everything at once. To run everything at once just run
+
+```bash
+docker-compose up
+```
+
+After that there's just one API to hit `http://localhost:8080/api/regulation?segment_id=1&timestamp=1629207385`
+
+It will return the active regulations of that timestamp for that segment.
