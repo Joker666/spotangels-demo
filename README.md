@@ -34,5 +34,5 @@ docker-compose up
 
 After that there's just one API to hit `http://localhost:8080/api/regulation?segment_id=1&timestamp=1629207385`
 
-It will return the active regulations of that timestamp for that segment. If there is a regulation that trumps all other, it will be returnred as `high_priority`.
+It will return the active regulations of that timestamp for that segment. If there is a regulation that trumps all other, it will be returned as `high_priority`.
 While for this task I am only handling active regulation for a timestamp, it doesn't handle the extra parts like, what is the next active regulation and when that starts which could be the next step for improvement.
