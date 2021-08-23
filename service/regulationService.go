@@ -74,6 +74,8 @@ func (r *RegulationService) GetRegulatedSlotsForATime(ctx context.Context, segme
 	return highPriorityActiveRegulation, activeRegulations, nil
 }
 
+// Golang's week starts from Sunday with 0. Since storing 0 in DB is ambiguous, we will assume
+// here that week starts from Monday with 1 as value, that makes Sunday 7
 func (r *RegulationService) processDayOfWeek(current time.Time) int {
 	if current.Weekday() == time.Sunday {
 		return 7
